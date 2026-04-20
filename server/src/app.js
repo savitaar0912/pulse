@@ -15,8 +15,9 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 
 app.use(helmet());
+const isDev = process.env.NODE_ENV !== "production";
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: isDev ? true : process.env.CLIENT_URL,
   credentials: true,          // required for cookies to cross origins
 }));
 app.use(morgan('dev'));
