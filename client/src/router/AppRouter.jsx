@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuthStore } from "../features/auth/store";
 
 // Pages (we'll build these next session)
 // Placeholders so the router doesn't crash
@@ -8,12 +9,45 @@ const FeedPage = () => <div>Feed</div>;
 const ProfilePage = () => <div>Profile</div>;
 const NotFoundPage = () => <div>404</div>;
 
+function ProtectedRoute({ children }) {
+  const { user } = useAuthStore();
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function GuestRoute({ children }) {
+  const { user } = useAuthStore();
+  if (user) return <Navigate to="/" replace />;
+  return children;
+}
+
 export function AppRouter() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/" element={<FeedPage />} />
+      <Route
+        path="/login"
+        element={
+          <GuestRoute>
+            <LoginPage />
+          </GuestRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <GuestRoute>
+            <RegisterPage />
+          </GuestRoute>
+        }
+      />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <FeedPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/:username" element={<ProfilePage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
