@@ -14,22 +14,27 @@ import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet());              // checkpoint 1: sets security headers
 const isDev = process.env.NODE_ENV !== "production";
-app.use(cors({
+app.use(cors({                     // checkpoint 2: checks if this origin is allowed
   origin: isDev ? true : process.env.CLIENT_URL,
-  credentials: true,          // required for cookies to cross origins
+  credentials: true,          // required for cookies to cross origins 
 }));
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(cookieParser());
+app.use(morgan('dev'));             // checkpoint 3: logs the request
+app.use(express.json());            // checkpoint 4: parses the body from raw text to JS object
+app.use(cookieParser());            // checkpoint 5: parses cookies into req.cookies
 
+
+
+// Every single request to your backend passes all five before reaching any route.
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/stream', streamRoutes);
 
+
+//  Instead of writing try/catch + res.status(400).json(...) in every single controller, you have one central place that handles all errors.
 app.use(errorHandler);        // must be last
 
 export default app;
