@@ -1,5 +1,3 @@
-// This interceptor is the JWT refresh rotation in practice. When a request gets a 401 (token expired), it automatically tries to refresh once using the httpOnly cookie, then retries the original request. If refresh also fails, it logs the user out. You'll never have to think about this again — every API call goes through it.
-
 import axios from 'axios';
 import { queryClient } from './queryClient';
 

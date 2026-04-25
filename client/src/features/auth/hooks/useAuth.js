@@ -5,6 +5,8 @@ import { authApi } from '../../../api/auth';
 import { useAuthStore } from '../store';
 import { queryClient } from '../../../lib/queryClient';
 
+// 3 lines. Automatic caching. If you visit the feed, navigate to a profile, come back — the feed doesn't re-fetch. It serves from cache instantly and revalidates in the background. The queryKey is the cache identifier. ['posts'] and ['posts', userId] are different cache entries. You'll use this heavily when building the feed and profiles.
+
 export const useLogin = () => {
     const { setAuth } = useAuthStore()
     const navigate = useNavigate()
