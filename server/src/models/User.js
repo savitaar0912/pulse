@@ -2,31 +2,31 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true,
-        minlength: 3,
-        maxlength: 30,
-        match: /^[a-zA-Z0-9_]+$/,     // no spaces, only alphanumeric + underscore
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true,
-    },
-    passwordHash: { type: String, required: true },
-    displayName: { type: String, required: true, maxlength: 50 },
-    bio: { type: String, maxlength: 160 },
-    avatarUrl: { type: String, default: '' },
-    avatarPublicId: { type: String, default: '' },
-    followersCount: { type: Number, default: 0 },
-    followingCount: { type: Number, default: 0 },
-    postsCount: { type: Number, default: 0 },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 30,
+    match: /^[a-zA-Z0-9_]+$/,     // no spaces, only alphanumeric + underscore
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  passwordHash: { type: String, required: true },
+  displayName: { type: String, required: true, maxlength: 50 },
+  bio: { type: String, maxlength: 160 },
+  avatarUrl: { type: String, default: '' },
+  avatarPublicId: { type: String, default: '' },
+  followersCount: { type: Number, default: 0 },
+  followingCount: { type: Number, default: 0 },
+  postsCount: { type: Number, default: 0 },
 }, { timestamps: true })
 
 // Hash password before saving
