@@ -6,7 +6,7 @@ import { AppError } from "../middleware/errorHandler.js"
 export const likePost = async (req, res, next) => {
     try {
 
-        const post = Post.findById(req.params.id)
+        const post = await Post.findById(req.params.id)
         if (!post) throw new AppError('Post Not Found', 404)
 
         // Check if already liked — our DB index prevents duplicates too, but
@@ -40,7 +40,7 @@ export const likePost = async (req, res, next) => {
 export const unlikePost = async (req, res, next) => {
     try {
 
-        const post = Post.findById(req.params.id)
+        const post = await Post.findById(req.params.id)
         if (!post) throw new AppError('Post Not Found', 404)
 
         const like = await Like.findOneAndDelete({ userId: req.userId, postId: post._id });
