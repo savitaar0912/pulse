@@ -7,10 +7,10 @@ import Post from "../models/Post.js"
 
 export const getProfile = async (req, res, next) => {
     try {
-        const user = User.findOne({ username: req.params.username });
+        const user = await User.findOne({ username: req.params.username });
         if (!user) throw new AppError("User Not Found", 404)
 
-        return res.status(200).res.json({ user })
+        return res.status(200).json({ user })
     } catch (error) {
         next(error)
     }
@@ -22,7 +22,7 @@ export const editProfile = async (req, res, next) => {
 
         // Only update avatar if a new image was uploaded
         if (req.file) {
-            const user = User.findById(req.userId)
+            const user = await User.findById(req.userId)
 
             // Delete old avatar from Cloudinary if exists
             if (user.avatarPublicId) {
