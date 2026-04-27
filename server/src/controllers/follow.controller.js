@@ -11,7 +11,7 @@ export const followUser = async (req, res, next) => {
         if (!user) throw new AppError('User Not Found', 404)
 
         //  check if already followed
-        const existing = await Follow.findOne({ followerId: req.userId, followId: user._id })
+        const existing = await Follow.findOne({ followerId: req.userId, followingId: user._id })
         if (existing) throw new AppError('Already Follow', 409)
 
         const follow = await Follow.create({
@@ -46,7 +46,7 @@ export const unfollowUser = async (req, res, next) => {
         const user = await User.findById(req.params.id)
         if (!user) throw new AppError("User Not Found", 404)
 
-        const follow = await Follow.findOneAndDelete({ followerId: req.userId, followId: user._id })
+        const follow = await Follow.findOneAndDelete({ followerId: req.userId, followingId: user._id })
         if (!follow) throw new AppError('Not Following the user', 409)
 
         await Promise.all([
