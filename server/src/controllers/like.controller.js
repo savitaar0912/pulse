@@ -20,7 +20,7 @@ export const likePost = async (req, res, next) => {
         })
 
         // Increment user's like count — denormalized counter we designed in Phase 1
-        await Post.findByIdAndUpdate(req.postId, { $inc: { likesCount: 1 } });
+        await Post.findByIdAndUpdate(post._id, { $inc: { likesCount: 1 } });
 
         if (post.userId.toString() !== req.userId) {
             await Notification.create({
@@ -47,7 +47,7 @@ export const unlikePost = async (req, res, next) => {
         if (!like) throw new AppError('You have not liked this post', 404);
 
         // Decr user's like count — denormalized counter we designed in Phase 1
-        await Post.findByIdAndUpdate(req.postId, { $inc: { likesCount: -1 } });
+        await Post.findByIdAndUpdate(post._id, { $inc: { likesCount: -1 } });
 
         return res.status(201).json({ message: 'Unliked' })
     } catch (error) {

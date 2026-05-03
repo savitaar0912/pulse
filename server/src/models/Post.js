@@ -14,12 +14,10 @@ const postSchema = mongoose.Schema({
     },
     imageUrl: {
         type: String,
-        unique: true,
         default: ' '
     },
     imagePublicId: {
         type: String,
-        unique: true,
         default: ' '
     },
     likesCount: {

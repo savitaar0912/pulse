@@ -2,17 +2,18 @@ import Post from '../models/Post.js';
 import User from '../models/User.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { cloudinary } from '../config/cloudinary.js';
+import Like from '../models/Like.js';
 
 export const createPost = async (req, res, next) => {
   try {
     const { content } = req.body;
 
     // req.file is populated by multer — it's undefined if no image was uploaded
-    const imageUrl      = req.file?.path || '';
+    const imageUrl = req.file?.path || '';
     const imagePublicId = req.file?.filename || '';
 
     const post = await Post.create({
-      userId:  req.userId,    // set by protect middleware — never trust client for this
+      userId: req.userId,    // set by protect middleware — never trust client for this
       content,
       imageUrl,
       imagePublicId,
@@ -28,7 +29,7 @@ export const createPost = async (req, res, next) => {
   } catch (err) {
     // If MongoDB save fails after Cloudinary upload, clean up the orphaned image
     if (req.file?.filename) {
-      await cloudinary.uploader.destroy(req.file.filename).catch(() => {});
+      await cloudinary.uploader.destroy(req.file.filename).catch(() => { });
     }
     next(err);
   }
@@ -74,9 +75,22 @@ export const getFeed = async (req, res, next) => {
     const hasMore = posts.length > limit;
     if (hasMore) posts.pop();              // remove the extra one before sending
 
+    // Check which posts the current user has liked
+    const likedPosts = await Like.find({
+      userId: req.userId,
+      postId: { $in: posts.map(p => p._id) }
+    }).select('postId');
+
+    const likedSet = new Set(likedPosts.map(l => l.postId.toString()));
+
+    const postsWithLiked = posts.map(post => ({
+      ...post.toObject(),
+      isLiked: likedSet.has(post._id.toString())
+    }));
+
     const nextCursor = hasMore ? posts[posts.length - 1]._id : null;
 
-    res.json({ posts, nextCursor, hasMore });
+    res.json({ posts: postsWithLiked, nextCursor, hasMore });
   } catch (err) {
     next(err);
   }
@@ -87,7 +101,18 @@ export const getSinglePost = async (req, res, next) => {
     const post = await Post.findById(req.params.id)
       .populate('userId', 'username displayName avatarUrl');
     if (!post) throw new AppError('Post not found', 404);
-    res.json({ post });
+
+    const likedPost = await Like.findOne({
+      userId: req.userId,
+      postId: post._id
+    })
+
+    const postWithLiked = {
+      ...post.toObject(),
+      isLiked: !!likedPost,
+    };
+
+    res.json({ post: postWithLiked });
   } catch (err) {
     next(err);
   }
