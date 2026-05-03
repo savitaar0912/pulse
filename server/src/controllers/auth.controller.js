@@ -27,7 +27,7 @@ export const register = async (req, res, next) => {
         const refreshToken = generateRefreshToken(newUser._id);
         setRefreshCookie(res, refreshToken);
 
-        res.status(201).json({ accessToken, newUser });
+        res.status(201).json({ accessToken, user: newUser });
     } catch (error) {
         next(error);
     }
@@ -59,7 +59,6 @@ export const refresh = async (req, res, next) => {
         const token = req.cookies.refreshToken
         if (!token) throw new AppError('No refresh token', 401)
 
-        console.log("cookies:", req.cookies);
         const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
         const user = await User.findById(decoded.userId);
         if (!user) throw new AppError('User not found', 401);
