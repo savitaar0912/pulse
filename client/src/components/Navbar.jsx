@@ -9,27 +9,30 @@ export default function Navbar() {
   const { mutate: handleLogout } = useLogout();
 
   return (
-    <nav className="w-full flex items-center justify-between px-6 py-2 bg-white shadow">
+    <nav className="w-full relative flex items-center px-6 py-2 bg-white shadow min-h-[56px]">
       {/* Left: Logo */}
-      <div className="flex items-center">
-        <Link to="/" className="">
-          <span className="rounded-full bg-green-500 text-white px-4 py-2 font-bold text-lg shadow-md">
-            Pulse
-          </span>
+      <div className="flex items-center z-10">
+        <Link to="/">
+          <img
+            src="/favicon.png"
+            alt=""
+            srcset=""
+            className="rounded-half h-[50px]"
+          />
         </Link>
       </div>
 
-      {/* Center: Search  */}
-      <div className="flex justify-center">
+      {/* Center: Search (absolute center) */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex justify-center w-[320px]">
         <input
           type="text"
           placeholder="Search User"
-          className="bg-gray-100 rounded-full px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="bg-gray-100 rounded-full px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-emerald-400"
         />
       </div>
 
       {/* Right: User/Logout or Login */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 ml-auto z-10">
         {user ? (
           <>
             <Link to={`/${user.username}`}>
@@ -37,7 +40,7 @@ export default function Navbar() {
             </Link>
             <button
               onClick={() => handleLogout()}
-              className="text-green-600 font-semibold hover:underline focus:outline-none"
+              className="text-emerald-600 font-semibold hover:underline focus:outline-none"
               type="button"
             >
               Log Out

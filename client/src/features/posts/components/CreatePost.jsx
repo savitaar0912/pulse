@@ -66,7 +66,7 @@ export default function CreatePost() {
       <div className="flex items-center justify-between pt-1">
         <button
           onClick={() => fileRef.current.click()}
-          className="text-gray-400 hover:text-blue-500"
+          className="text-gray-400 hover:text-emerald-500"
         >
           <Image size={20} />
         </button>
@@ -82,7 +82,7 @@ export default function CreatePost() {
           <button
             onClick={handleSubmit}
             disabled={isPending || !content.trim()}
-            className="bg-blue-500 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-blue-600 disabled:opacity-50"
+            className="bg-emerald-500 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-emerald-600 disabled:opacity-50"
           >
             {isPending ? "Posting..." : "Post"}
           </button>

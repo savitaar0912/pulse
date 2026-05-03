@@ -15,7 +15,7 @@ export default function Avatar({ src, userName, size = "md" }) {
 
   return (
     <div
-      className={`${sizes[size]} rounded-full bg-blue-500 text-white flex items-center justify-center font-bold`}
+      className={`${sizes[size]} rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold`}
     >
       {userName?.[0]?.toUpperCase()}
     </div>
