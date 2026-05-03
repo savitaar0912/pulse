@@ -14,6 +14,7 @@ export const useLogin = () => {
     return useMutation({
         mutationFn: authAPI.login,
         onSuccess: ({ user, accessToken }) => {
+            localStorage.setItem('accessToken', accessToken); // 🔥 REQUIRED
             setAuth(user, accessToken);
             navigate('/')
         },

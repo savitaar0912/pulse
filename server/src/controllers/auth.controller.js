@@ -59,7 +59,8 @@ export const refresh = async (req, res, next) => {
         const token = req.cookies.refreshToken
         if (!token) throw new AppError('No refresh token', 401)
 
-        const decoded = jwt.verify(token, process.env.JWT_REFRESH_ACCESS)
+        console.log("cookies:", req.cookies);
+        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
         const user = await User.findById(decoded.userId);
         if (!user) throw new AppError('User not found', 401);
 
@@ -76,11 +77,11 @@ export const logout = (req, res) => {
 }
 
 export const getMe = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.userId);
-    if (!user) throw new AppError('User not found', 404);
-    res.json({ user });
-  } catch (err) {
-    next(err);
-  }
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) throw new AppError('User not found', 404);
+        res.json({ user });
+    } catch (err) {
+        next(err);
+    }
 };
