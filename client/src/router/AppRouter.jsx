@@ -1,11 +1,14 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "../features/auth/store";
+import LoginPage from "../pages/loginPage";
+import RegisterPage from "../pages/registerPage";
+import FeedPage from "../pages/feedPage";
 
 // Pages (we'll build these next session)
 // Placeholders so the router doesn't crash
-const LoginPage = () => <div>Login</div>;
-const RegisterPage = () => <div>Register</div>;
-const FeedPage = () => <div>Feed</div>;
+// const LoginPage = () => <div>Login</div>;
+// const RegisterPage = () => <div>Register</div>;
+// const FeedPage = () => <div>Feed</div>;
 const ProfilePage = () => <div>Profile</div>;
 const NotFoundPage = () => <div>404</div>;
 
@@ -49,7 +52,7 @@ export function AppRouter() {
         }
       />
       <Route path="/:username" element={<ProfilePage />} />
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

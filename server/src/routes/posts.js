@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { createPost, deletePost, getFeed, getSinglePost } from '../controllers/post.controller.js';
 import { protect } from '../middleware/auth.js';
 import { upload } from '../config/cloudinary.js';
-import { likePost, unlikePost } from '../controllers/like.controller';
+import { likePost, unlikePost } from '../controllers/like.controller.js';
 
 const router = Router();
 

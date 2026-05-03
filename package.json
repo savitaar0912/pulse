@@ -12,10 +12,13 @@
     "dev:server": "npm run dev --workspace=server",
     "build": "npm run build --workspace=client",
     "start": "npm run start --workspace=server",
-     "lint": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0"
   }
 }
