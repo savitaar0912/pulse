@@ -15,6 +15,7 @@ export const getProfile = async (req, res, next) => {
         next(error)
     }
 }
+
 export const editProfile = async (req, res, next) => {
     try {
         const { displayName, bio } = req.body
@@ -44,6 +45,7 @@ export const editProfile = async (req, res, next) => {
         next(error)
     }
 }
+
 export const getUserPosts = async (req, res, next) => {
     try {
         const { cursor, limit = 10 } = req.query;
@@ -65,6 +67,7 @@ export const getUserPosts = async (req, res, next) => {
         next(error)
     }
 }
+
 export const searchUsers = async (req, res, next) => {
     try {
         const { q } = req.query;

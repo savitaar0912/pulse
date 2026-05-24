@@ -16,7 +16,7 @@ export default function Navbar() {
           <img
             src="/favicon.png"
             alt=""
-            srcset=""
+            srcSet=""
             className="rounded-half h-[50px]"
           />
         </Link>
@@ -40,7 +40,7 @@ export default function Navbar() {
             </Link>
             <button
               onClick={() => handleLogout()}
-              className="text-emerald-600 font-semibold hover:underline focus:outline-none"
+              className="text-emerald-600 font-semibold hover:underline cursor-pointer focus:outline-none"
               type="button"
             >
               Log Out

@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
-  passwordHash: { type: String, required: true },
+  passwordHash: { type: String, required: true, select: false },
   displayName: { type: String, required: true, maxlength: 50 },
   bio: { type: String, maxlength: 160 },
   avatarUrl: { type: String, default: '' },

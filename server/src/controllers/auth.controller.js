@@ -37,7 +37,7 @@ export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body
 
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ email }).select('+passwordHash')
 
         if (!user || !(await user.comparePassword(password))) {
             throw new AppError(`Invalid Credentials`, 401)
