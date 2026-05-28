@@ -1,6 +1,6 @@
 import userImage from "../assets/user.png";
 
-export default function Avatar({ src, userName, size = "md" }) {
+export default function Avatar({ src, username, size = "md" }) {
   const sizes = {
     sm: "w-8 h-8 text-sm",
     md: "w-10 h-10 text-base",
@@ -10,8 +10,8 @@ export default function Avatar({ src, userName, size = "md" }) {
   return (
     <img
       src={src?.trim() ? src : userImage}
-      alt={userName || "User Avatar"}
-      title={userName}
+      alt={username || "User Avatar"}
+      title={username}
       className={`${sizes[size]} rounded-full object-cover`}
     />
   );
