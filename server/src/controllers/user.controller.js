@@ -9,7 +9,7 @@ export const getProfile = async (req, res, next) => {
     const user = await User.findOne({ username: req.params.username });
     if (!user) throw new AppError("User Not Found", 404);
 
-    const userFollowed = Follow.findOne({
+    const userFollowed = await Follow.findOne({
       followerId: req.userId,
       followingId: user._id,
     });

@@ -64,9 +64,9 @@ export default function ProfilePage() {
 
   const handleFollowToggle = () => {
     if (isFollowing) {
-      unfollow(user._id);
+      unfollow({ id: user._id, username });
     } else {
-      follow(user._id);
+      follow({ id: user._id, username });
     }
   };
 

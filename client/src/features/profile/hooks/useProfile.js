@@ -38,30 +38,38 @@ export const useUserPosts = (userId) => {
 
 export const useFollowUser = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: userAPI.followUser,
-    onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["profile", id] });
-      toast.success("Followed");
+    mutationFn: ({ id }) => userAPI.followUser(id),
+    onSuccess: (_, { username }) => {
+      queryClient.setQueryData(['profile', username], (old) => ({
+        ...old,
+        user: {
+          ...old.user,
+          isFollowed: true,
+          followersCount: old.user.followersCount + 1
+        }
+      }));
+      toast.success('Followed');
     },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || "Unable to Follow");
-    },
+    onError: (err) => toast.error(err.response?.data?.message || 'Unable to follow'),
   });
 };
 
 export const useUnfollowUser = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: userAPI.unfollowUser,
-    onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ["profile", id] });
-      toast.success("Unfollowed");
+    mutationFn: ({ id }) => userAPI.unfollowUser(id),
+    onSuccess: (_, { username }) => {
+      queryClient.setQueryData(['profile', username], (old) => ({
+        ...old,
+        user: {
+          ...old.user,
+          isFollowed: false,
+          followersCount: old.user.followersCount - 1
+        }
+      }));
+      toast.success('Unfollowed');
     },
-    onError: (err) => {
-      toast.error(err.response?.data?.message || "Unable to Unfollow");
-    },
+    onError: (err) => toast.error(err.response?.data?.message || 'Unable to unfollow'),
   });
 };
