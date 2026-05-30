@@ -3,14 +3,15 @@ import { useAuthStore } from "../features/auth/store";
 import LoginPage from "../pages/loginPage";
 import RegisterPage from "../pages/registerPage";
 import FeedPage from "../pages/feedPage";
+import ProfilePage from '../pages/profilePage';
 
 // Pages (we'll build these next session)
 // Placeholders so the router doesn't crash
 // const LoginPage = () => <div>Login</div>;
 // const RegisterPage = () => <div>Register</div>;
 // const FeedPage = () => <div>Feed</div>;
-const ProfilePage = () => <div>Profile</div>;
-const NotFoundPage = () => <div>404</div>;
+// const ProfilePage = () => <div>Profile</div>;
+// const NotFoundPage = () => <div>404</div>;
 
 function ProtectedRoute({ children }) {
   const { user } = useAuthStore();
