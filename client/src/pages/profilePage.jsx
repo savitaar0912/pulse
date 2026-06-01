@@ -3,7 +3,6 @@ import {
   useProfile,
   useUserPosts,
   useFollowUser,
-  useUnfollowUser,
 } from "../features/profile/hooks/useProfile";
 import { useAuthStore } from "../features/auth/store";
 import { useRef, useCallback } from "react";
@@ -20,9 +19,7 @@ export default function ProfilePage() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useUserPosts(
     user?._id,
   );
-  const { mutate: follow, isPending: following } = useFollowUser();
-  const { mutate: unfollow, isPending: unfollowing } = useUnfollowUser();
-
+  const { mutate: toggleFollow, isPending: toggling } = useFollowUser();
   // infinite scroll — same pattern as FeedPage
   const observer = useRef();
 
@@ -60,15 +57,7 @@ export default function ProfilePage() {
     );
 
   const isOwnProfile = currentUser?._id === user._id;
-  const isFollowing = user.isFollowed;
-
-  const handleFollowToggle = () => {
-    if (isFollowing) {
-      unfollow({ id: user._id, username });
-    } else {
-      follow({ id: user._id, username });
-    }
-  };
+  const isFollowing = user.isFollowing ?? user.isFollowed ?? false;
 
   const posts = data?.pages.flatMap((page) => page.posts) ?? [];
 
@@ -91,8 +80,8 @@ export default function ProfilePage() {
             </Link>
           ) : (
             <button
-              onClick={handleFollowToggle}
-              disabled={following || unfollowing}
+              onClick={() => toggleFollow({ id: user._id, isFollowing })}
+              disabled={toggling}
               className={`text-sm px-4 py-1.5 rounded-full font-semibold transition
                 ${
                   isFollowing
