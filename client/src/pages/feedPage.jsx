@@ -2,8 +2,10 @@ import { useRef, useCallback } from "react";
 import { useFeed } from "../features/posts/hooks/usePosts";
 import PostCard from "../components/PostCard";
 import CreatePost from "../features/posts/components/CreatePost";
+import { useSSE } from "../hooks/useSSE";
 
 export default function FeedPage() {
+  useSSE();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useFeed();
 

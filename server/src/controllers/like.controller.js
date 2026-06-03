@@ -1,56 +1,67 @@
-import Post from "../models/Post.js"
-import Like from "../models/Like.js"
-import Notification from "../models/Notification.js"
-import { AppError } from "../middleware/errorHandler.js"
+import Post from "../models/Post.js";
+import Like from "../models/Like.js";
+import Notification from "../models/Notification.js";
+import { AppError } from "../middleware/errorHandler.js";
+import { sendToUser } from "../services/sseService.js";
 
 export const likePost = async (req, res, next) => {
-    try {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) throw new AppError("Post Not Found", 404);
 
-        const post = await Post.findById(req.params.id)
-        if (!post) throw new AppError('Post Not Found', 404)
+    // Check if already liked — our DB index prevents duplicates too, but
+    // checking here gives a cleaner error message than a MongoDB duplicate key error
+    const existing = await Like.findOne({
+      userId: req.userId,
+      postId: post._id,
+    });
+    if (existing) throw new AppError("Already liked", 409);
 
-        // Check if already liked — our DB index prevents duplicates too, but
-        // checking here gives a cleaner error message than a MongoDB duplicate key error
-        const existing = await Like.findOne({ userId: req.userId, postId: post._id });
-        if (existing) throw new AppError('Already liked', 409);
+    const like = await Like.create({
+      userId: req.userId,
+      postId: post._id,
+    });
 
-        const like = await Like.create({
-            userId: req.userId,
-            postId: post._id
-        })
+    // Increment user's like count — denormalized counter we designed in Phase 1
+    await Post.findByIdAndUpdate(post._id, { $inc: { likesCount: 1 } });
 
-        // Increment user's like count — denormalized counter we designed in Phase 1
-        await Post.findByIdAndUpdate(post._id, { $inc: { likesCount: 1 } });
+    if (post.userId.toString() !== req.userId) {
+      await Notification.create({
+        type: "like",
+        recipientId: post.userId, // the post author gets notified
+        actorId: req.userId, // the person who liked
+        postId: post._id,
+      });
 
-        if (post.userId.toString() !== req.userId) {
-            await Notification.create({
-                type: 'like',
-                recipientId: post.userId,   // the post author gets notified
-                actorId: req.userId,        // the person who liked
-                postId: post._id,
-            });
-        }
-
-        return res.status(201).json({ like })
-    } catch (error) {
-        next(error)
+      sendToUser(post.userId, "new_notification", {
+        type: "like",
+        postId: post._id,
+        actorId: req.userId,
+      });
     }
-}
+
+    return res.status(201).json({ like });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const unlikePost = async (req, res, next) => {
-    try {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) throw new AppError("Post Not Found", 404);
 
-        const post = await Post.findById(req.params.id)
-        if (!post) throw new AppError('Post Not Found', 404)
+    const like = await Like.findOneAndDelete({
+      userId: req.userId,
+      postId: post._id,
+    });
+    if (!like) throw new AppError("You have not liked this post", 404);
 
-        const like = await Like.findOneAndDelete({ userId: req.userId, postId: post._id });
-        if (!like) throw new AppError('You have not liked this post', 404);
+    // Decr user's like count — denormalized counter we designed in Phase 1
+    await Post.findByIdAndUpdate(post._id, { $inc: { likesCount: -1 } });
 
-        // Decr user's like count — denormalized counter we designed in Phase 1
-        await Post.findByIdAndUpdate(post._id, { $inc: { likesCount: -1 } });
-
-        return res.status(201).json({ message: 'Unliked' })
-    } catch (error) {
-        next(error)
-    }
-}
+    return res.status(201).json({ message: "Unliked" });
+  } catch (error) {
+    next(error);
+  }
+};
