@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
-import { addClient, removeClient } from '../services/sseService';
+import { addClient, removeClient } from '../services/sseService.js';
 
 const router = Router();
 

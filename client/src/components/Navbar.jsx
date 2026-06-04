@@ -3,6 +3,7 @@ import { useAuthStore } from "../features/auth/store";
 import Avatar from "./Avatar";
 import { useLogout } from "../features/auth/hooks/useAuth";
 import { Link } from "react-router-dom";
+import NotificationsPage from "../pages/notificationsPage";
 
 export default function Navbar() {
   const { user } = useAuthStore();
@@ -35,6 +36,7 @@ export default function Navbar() {
       <div className="flex items-center gap-4 ml-auto z-10">
         {user ? (
           <>
+            {/* <NotificationsPage /> */}
             <Link to={`/${user.username}`}>
               <Avatar src={user.avatarUrl} userName={user.username} />
             </Link>

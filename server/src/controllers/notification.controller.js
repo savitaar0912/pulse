@@ -7,7 +7,7 @@ export const getNotifications = async (req, res, next) => {
       .limit(20)
       .populate("actorId", "username displayName avatarUrl");
 
-    res.status(200).json({ notifications });
+    return res.status(200).json({ notifications });
   } catch (err) {
     next(err);
   }
@@ -22,7 +22,7 @@ export const markAllRead = async (req, res, next) => {
       },
     );
 
-    res.json({ message: "Notifications marked as read" });
+    return res.json({ message: "Notifications marked as read" });
   } catch (err) {
     next(err);
   }
