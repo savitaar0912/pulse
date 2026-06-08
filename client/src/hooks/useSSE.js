@@ -35,7 +35,12 @@ export const useSSE = () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
     });
 
-    es.onerror = () => es.close();
-    return () => es.close();
+    es.onerror = () => {
+      try { es.close(); } catch (e) {}
+    };
+
+    return () => {
+      try { es.close(); } catch (e) {}
+    };
   }, [user]);
 };

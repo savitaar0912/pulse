@@ -16,7 +16,7 @@ export const getNotifications = async (req, res, next) => {
 export const markAllRead = async (req, res, next) => {
   try {
     await Notification.updateMany(
-      { recepientId: req.userId, isRead: false },
+      { recipientId: req.userId, isRead: false },
       {
         $set: { isRead: true },
       },

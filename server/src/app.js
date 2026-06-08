@@ -31,7 +31,7 @@ app.use(cookieParser()); // checkpoint 5: parses cookies into req.cookies
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/notifications", notificationRoutes);
+app.use("/api/notification", notificationRoutes);
 app.use("/api/stream", streamRoutes);
 
 //  Instead of writing try/catch + res.status(400).json(...) in every single controller, you have one central place that handles all errors.

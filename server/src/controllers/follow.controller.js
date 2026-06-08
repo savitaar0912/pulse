@@ -37,10 +37,10 @@ export const followUser = async (req, res, next) => {
         actorId: req.userId, // the person who follow
       });
 
-      sendToUser(follow._id, "new_follow", {
+      sendToUser(user._id, "new_follow", {
         type: "follow",
-        recipientId: user._id, // the user gets follow request notiiffication
-        actorId: req.userId, // the person who follow
+        recipientId: user._id,
+        actorId: req.userId,
       });
     }
 
