@@ -91,22 +91,3 @@ export const useFollowUser = () => {
     },
   });
 };
-
-// export const useUnfollowUser = () => {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     mutationFn: ({ id }) => userAPI.unfollowUser(id),
-//     onSuccess: (_, { username }) => {
-//       queryClient.setQueryData(['profile', username], (old) => ({
-//         ...old,
-//         user: {
-//           ...old.user,
-//           isFollowed: false,
-//           followersCount: old.user.followersCount - 1
-//         }
-//       }));
-//       toast.success('Unfollowed');
-//     },
-//     onError: (err) => toast.error(err.response?.data?.message || 'Unable to unfollow'),
-//   });
-// };

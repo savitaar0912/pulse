@@ -24,13 +24,13 @@ export default function PostCard({ post }) {
           </p>
         </div>
         {isOwner && (
-          <button
-            onClick={() => deletePost(post._id)}
-            className="ml-auto text-gray-400 hover:text-red-500"
-          >
-            <Trash2 size={16} />
-          </button>
-        )}
+              <button
+                onClick={() => deletePost({ id: post._id, ownerId: post.userId._id })}
+                className="ml-auto text-gray-400 hover:text-red-500"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
       </div>
 
       <p className="text-sm leading-relaxed">{post.content}</p>
@@ -46,7 +46,7 @@ export default function PostCard({ post }) {
 
       <div className="flex items-center gap-4 pt-1">
         <button
-          onClick={() => toggleLike({ id: post._id, isLiked })}
+          onClick={() => toggleLike({ id: post._id, isLiked, ownerId: post.userId._id })}
           className={`flex items-center gap-1 text-sm ${isLiked ? "text-red-500" : "text-gray-400 hover:text-red-500"}`}
         >
           <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
