@@ -171,23 +171,26 @@ export default function Navbar() {
       </div>
 
       {/* Right: User icons */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mr-2.5">
         {user ? (
           <>
             <NotificationsBell />
-            <Link to={`/${user.username}`}>
-              <Avatar src={user.avatarUrl} username={user.username} />
-            </Link>
-            <button
-              onClick={() => handleLogout()}
-              className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
-              title="Log out"
-              aria-label="Log out"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1" />
-              </svg>
-            </button>
+            <div className="relative inline-block group">
+              <Link to={`/${user.username}`} className="inline-block">
+                <Avatar src={user.avatarUrl} username={user.username} />
+              </Link>
+
+              <button
+                onClick={() => handleLogout()}
+                className="absolute -right-5 -bottom-5 p-1 bg-white rounded-full border shadow-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto hover:cursor-pointer"
+                title="Log out"
+                aria-label="Log out"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1" />
+                </svg>
+              </button>
+            </div>
           </>
         ) : (
           <Link to="/login" className="text-emerald-600 font-semibold">Log In</Link>
