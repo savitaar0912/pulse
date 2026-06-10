@@ -6,6 +6,8 @@ import {
 } from "@tanstack/react-query";
 import { userAPI } from "../../../api/users";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../auth/store";
 
 // username comes from the URL — caller passes it in
 export const useProfile = (username) => {
@@ -92,3 +94,31 @@ export const useFollowUser = () => {
   });
 };
 
+export const useEditProfile = () => {
+  const queryClient = useQueryClient();
+  const { setAuth } = useAuthStore();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: (formData) => userAPI.editProfile(formData),
+    onSuccess: async (res) => {
+      // server returns { user }
+      const updated = res?.user ?? res;
+
+      // 1) invalidate the profile cache for the updated username
+      if (updated?.username) {
+        queryClient.invalidateQueries({ queryKey: ["profile", updated.username] });
+      }
+
+      // 2) update the persisted auth state with the updated user
+      const accessToken = localStorage.getItem("accessToken");
+      await setAuth(updated, accessToken);
+
+      toast.success("Profile updated");
+      if (updated?.username) navigate(`/${updated.username}`);
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Update failed");
+    },
+  });
+};

@@ -3,11 +3,17 @@ import { useFeed } from "../features/posts/hooks/usePosts";
 import PostCard from "../components/PostCard";
 import CreatePost from "../features/posts/components/CreatePost";
 import { useSSE } from "../hooks/useSSE";
+import { useAuthStore } from "../features/auth/store";
+import { Navigate } from "react-router-dom";
 
 export default function FeedPage() {
+  const { user } = useAuthStore();
+
   useSSE();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useFeed();
+
+  if (!user) return <Navigate to="/login" replace />;
 
   // Infinite scroll — watch the last element, fetch more when it enters viewport
   const observer = useRef();

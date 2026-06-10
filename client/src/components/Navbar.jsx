@@ -182,7 +182,7 @@ export default function Navbar() {
 
               <button
                 onClick={() => handleLogout()}
-                className="absolute -right-5 -bottom-5 p-1 bg-white rounded-full border shadow-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto hover:cursor-pointer"
+                className="absolute -right-5 -bottom-5 p-1 bg-white rounded-full border shadow-sm opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto cursor-pointer"
                 title="Log out"
                 aria-label="Log out"
               >

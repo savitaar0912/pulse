@@ -4,6 +4,7 @@ import LoginPage from "../pages/loginPage";
 import RegisterPage from "../pages/registerPage";
 import FeedPage from "../pages/feedPage";
 import ProfilePage from '../pages/profilePage';
+import EditProfileForm from "../features/profile/components/EditProfileForm";
 
 // Pages (we'll build these next session)
 // Placeholders so the router doesn't crash
@@ -53,6 +54,7 @@ export function AppRouter() {
         }
       />
       <Route path="/:username" element={<ProfilePage />} />
+      <Route path="/settings" element={<EditProfileForm />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
