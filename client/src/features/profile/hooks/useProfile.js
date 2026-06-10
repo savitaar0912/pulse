@@ -101,7 +101,7 @@ export const useEditProfile = () => {
 
   return useMutation({
     mutationFn: (formData) => userAPI.editProfile(formData),
-    onSuccess: async (res) => {
+    onSuccess: (res) => {
       // server returns { user }
       const updated = res?.user ?? res;
 
@@ -112,7 +112,7 @@ export const useEditProfile = () => {
 
       // 2) update the persisted auth state with the updated user
       const accessToken = localStorage.getItem("accessToken");
-      await setAuth(updated, accessToken);
+      setAuth(updated, accessToken);
 
       toast.success("Profile updated");
       if (updated?.username) navigate(`/${updated.username}`);

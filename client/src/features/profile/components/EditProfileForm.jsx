@@ -52,7 +52,8 @@ export default function EditProfileForm() {
     const formData = new FormData();
     formData.append("displayName", values.displayName);
     if (values.bio) formData.append("bio", values.bio);
-    if (avatarFile) formData.append("avatar", avatarFile);
+    // server expects the file field to be named `image` (matches upload.single('image'))
+    if (avatarFile) formData.append("image", avatarFile);
 
     updateProfile(formData);
   };
