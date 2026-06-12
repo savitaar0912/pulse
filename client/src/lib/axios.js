@@ -23,12 +23,20 @@ let isRefreshing = false;
 let failedRefresh = false;
 let refreshSubscribers = [];
 
+// How many times to attempt the refresh endpoint before giving up
+const MAX_REFRESH_ATTEMPTS = 2;
+
 function subscribeTokenRefresh(cb) {
   refreshSubscribers.push(cb);
 }
 
 function onRefreshed(token) {
   refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+}
+
+function onRefreshFailed(err) {
+  refreshSubscribers.forEach((cb) => cb(null));
   refreshSubscribers = [];
 }
 
@@ -79,11 +87,29 @@ api.interceptors.response.use(
           ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api/auth/refresh`
           : '/api/auth/refresh';
 
-        const { data } = await axios.post(refreshUrl, {}, { withCredentials: true });
+        let attempt = 0;
+        let data = null;
+        let lastErr = null;
 
-        // If refresh returned no token, treat as failure
-        if (!data?.accessToken) throw new Error('No accessToken from refresh');
+        while (attempt < MAX_REFRESH_ATTEMPTS) {
+          attempt += 1;
+          try {
+            const res = await axios.post(refreshUrl, {}, { withCredentials: true });
+            data = res.data;
+            if (!data?.accessToken) throw new Error('No accessToken from refresh');
+            break; // success
+          } catch (err) {
+            lastErr = err;
+            if (attempt >= MAX_REFRESH_ATTEMPTS) {
+              throw lastErr;
+            }
+            // small backoff before retrying (non-blocking short pause)
+            await new Promise((r) => setTimeout(r, 200));
+          }
+        }
 
+        // succeeded
+        failedRefresh = false;
         localStorage.setItem('accessToken', data.accessToken);
         api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
         onRefreshed(data.accessToken);
@@ -93,6 +119,7 @@ api.interceptors.response.use(
         return api(original);
       } catch (err) {
         failedRefresh = true;
+        onRefreshFailed(err);
         // attempt server-side logout to clear httpOnly cookie
         try {
           const logoutUrl = import.meta.env.VITE_API_URL
