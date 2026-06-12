@@ -1,6 +1,7 @@
 import React from "react";
 import { useNotifications, useMarkAllRead } from "../features/notifications/hooks/useNotifications";
 import Avatar from "./Avatar";
+import { Link } from "react-router-dom";
 
 export default function NotificationsList() {
   const { data, isLoading } = useNotifications();
@@ -26,7 +27,7 @@ export default function NotificationsList() {
           <div className="p-4">Loading...</div>
         ) : notifications.length === 0 ? (
           <div className="p-4 text-sm text-gray-600">No notifications</div>
-        ) : (Make follow
+        ) : (
           notifications.map((n) => (
             <div key={n._id} className="flex gap-2 items-center py-2.5 px-8 sm:py-2 sm:px-6 hover:bg-gray-50">
               <Link to={`/${n.actorId?.username}`} className="flex-shrink-0">

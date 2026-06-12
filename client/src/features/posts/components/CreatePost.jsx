@@ -3,6 +3,7 @@ import { Image, X } from "lucide-react";
 import { useAuthStore } from "../../auth/store";
 import { useCreatePost } from "../hooks/usePosts";
 import Avatar from "../../../components/Avatar";
+import ImageCropper from "../../../components/ImageCropper";
 import { Link } from "react-router-dom";
 
 export default function CreatePost() {
@@ -16,8 +17,22 @@ export default function CreatePost() {
   const handleImage = (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    setFile(f);
-    setPreview(URL.createObjectURL(f));
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setCropSrc(ev.target.result);
+      setCropOpen(true);
+    };
+    reader.readAsDataURL(f);
+  };
+
+  const [cropOpen, setCropOpen] = useState(false);
+  const [cropSrc, setCropSrc] = useState(null);
+
+  const handleCropComplete = (blob) => {
+    setCropOpen(false);
+    const croppedFile = new File([blob], 'image.jpg', { type: blob.type });
+    setFile(croppedFile);
+    setPreview(URL.createObjectURL(croppedFile));
   };
 
   const handleSubmit = () => {
@@ -85,12 +100,19 @@ export default function CreatePost() {
           <button
             onClick={handleSubmit}
             disabled={isPending || !content.trim()}
-            className="bg-emerald-500 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-emerald-600 disabled:opacity-50"
+            className="bg-emerald-500 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-emerald-600 disabled:opacity-50 cursor-pointer"
           >
             {isPending ? "Posting..." : "Post"}
           </button>
         </div>
       </div>
+
+      <ImageCropper
+        src={cropSrc}
+        open={cropOpen}
+        onCancel={() => setCropOpen(false)}
+        onComplete={handleCropComplete}
+      />
     </div>
   );
 }
