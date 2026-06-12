@@ -27,13 +27,6 @@ app.use(morgan("dev")); // checkpoint 3: logs the request
 app.use(express.json()); // checkpoint 4: parses the body from raw text to JS object
 app.use(cookieParser()); // checkpoint 5: parses cookies into req.cookies
 
-app.get('/debug', (req, res) => {
-  res.json({
-    NODE_ENV: process.env.NODE_ENV,
-    CLIENT_URL: process.env.CLIENT_URL,
-  });
-});
-
 // Every single request to your backend passes all five before reaching any route.
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
