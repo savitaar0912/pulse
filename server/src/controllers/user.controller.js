@@ -3,6 +3,7 @@ import Notification from "../models/Notification.js";
 import { AppError } from "../middleware/errorHandler.js";
 import Follow from "../models/Follow.js";
 import Post from "../models/Post.js";
+import Like from "../models/Like.js";
 
 export const getProfile = async (req, res, next) => {
   try {
@@ -71,8 +72,21 @@ export const getUserPosts = async (req, res, next) => {
     const hasMore = posts.length > limit;
     if (hasMore) posts.pop();
 
+    // annotate which posts are liked by the current user
+    const likedPosts = await Like.find({
+      userId: req.userId,
+      postId: { $in: posts.map((p) => p._id) },
+    }).select("postId");
+
+    const likedSet = new Set(likedPosts.map((l) => l.postId.toString()));
+
+    const postsWithLiked = posts.map((post) => ({
+      ...post.toObject(),
+      isLiked: likedSet.has(post._id.toString()),
+    }));
+
     res.json({
-      posts,
+      posts: postsWithLiked,
       nextCursor: hasMore ? posts[posts.length - 1]._id : null,
       hasMore,
     });
