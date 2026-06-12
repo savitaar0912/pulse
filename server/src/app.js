@@ -22,7 +22,7 @@ app.use(
     credentials: true, // required for cookies to cross origins
   }),
 );
-app.use(helmet()); // checkpoint 1: sets security headers
+// app.use(helmet()); // checkpoint 1: sets security headers
 app.use(morgan("dev")); // checkpoint 3: logs the request
 app.use(express.json()); // checkpoint 4: parses the body from raw text to JS object
 app.use(cookieParser()); // checkpoint 5: parses cookies into req.cookies
