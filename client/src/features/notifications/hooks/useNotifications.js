@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 export const useNotifications = () => {
   return useQuery({
     queryKey: ["notifications"],
-    queryFn: notificationAPI.getNotifications,
+    queryFn: () => notificationAPI.getNotifications(),
   });
 };
 

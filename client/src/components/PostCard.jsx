@@ -1,10 +1,13 @@
 import { Heart, Trash2, MessageCircle } from "lucide-react";
+import { useState } from "react";
+import Comments from "../features/posts/components/Comments";
 import { useAuthStore } from "../features/auth/store";
 import { useLikePost, useDeletePost } from "../features/posts/hooks/usePosts";
 import Avatar from "./Avatar";
 import { formatDistanceToNow } from "date-fns";
 
 export default function PostCard({ post }) {
+  const [showComments, setShowComments] = useState(false);
   const { user } = useAuthStore();
   const { mutate: toggleLike } = useLikePost();
   const { mutate: deletePost } = useDeletePost();
@@ -14,7 +17,7 @@ export default function PostCard({ post }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 pt-2.5 pr-2.5 pb-2.5 pl-0">
         <Avatar src={post.userId.avatarUrl} username={post.userId.username} />
         <div>
           <p className="font-semibold text-sm">{post.userId.displayName}</p>
@@ -24,13 +27,15 @@ export default function PostCard({ post }) {
           </p>
         </div>
         {isOwner && (
-              <button
-                onClick={() => deletePost({ id: post._id, ownerId: post.userId._id })}
-                className="ml-auto text-gray-400 hover:text-red-500"
-              >
-                <Trash2 size={16} />
-              </button>
-            )}
+          <button
+            onClick={() =>
+              deletePost({ id: post._id, ownerId: post.userId._id })
+            }
+            className="ml-auto text-gray-400 hover:text-red-500"
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
       </div>
 
       <p className="text-sm leading-relaxed">{post.content}</p>
@@ -46,16 +51,28 @@ export default function PostCard({ post }) {
 
       <div className="flex items-center gap-4 pt-1">
         <button
-          onClick={() => toggleLike({ id: post._id, isLiked, ownerId: post.userId._id })}
+          onClick={() =>
+            toggleLike({ id: post._id, isLiked, ownerId: post.userId._id })
+          }
           className={`flex items-center gap-1 text-sm ${isLiked ? "text-red-500" : "text-gray-400 hover:text-red-500"}`}
         >
           <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
           {post.likesCount}
         </button>
-        <span className="flex items-center gap-1 text-sm text-gray-400">
+        <button
+          onClick={() => setShowComments((s) => !s)}
+          className="flex items-center gap-1 text-sm text-gray-400"
+        >
           <MessageCircle size={18} />
           {post.commentsCount}
-        </span>
+        </button>
+      </div>
+      <div
+        className={`pt-2 overflow-hidden transition-all duration-300 ${
+          showComments ? "max-h-[48rem] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <Comments postId={post._id} open={showComments} />
       </div>
     </div>
   );
