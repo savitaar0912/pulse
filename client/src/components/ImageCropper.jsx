@@ -1,20 +1,20 @@
-import React, { useState, useCallback, useRef } from 'react';
-import Cropper from 'react-easy-crop';
+import React, { useState, useCallback, useRef } from "react";
+import Cropper from "react-easy-crop";
 
 // Helper to create a cropped image blob from an image src and crop area
 async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
   const image = await new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = reject;
     img.src = imageSrc;
   });
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
   ctx.drawImage(
     image,
@@ -29,7 +29,7 @@ async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
   );
 
   return await new Promise((resolve) => {
-    canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.9);
+    canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.9);
   });
 }
 
@@ -55,13 +55,16 @@ export default function ImageCropper({ src, open, onCancel, onComplete }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50" onClick={onCancel} />
 
-      <div ref={containerRef} className="relative bg-white rounded-2xl shadow-lg w-full max-w-2xl mx-4 p-4">
+      <div
+        ref={containerRef}
+        className="relative bg-white rounded-2xl shadow-lg w-full max-w-2xl mx-4 p-4"
+      >
         <div className="h-80 relative bg-gray-100 rounded">
           <Cropper
             image={src}
             crop={crop}
             zoom={zoom}
-            aspect={4 / 3}
+            aspect={3 / 4}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
@@ -79,8 +82,18 @@ export default function ImageCropper({ src, open, onCancel, onComplete }) {
             className="flex-1"
           />
           <div className="flex gap-2">
-            <button onClick={onCancel} className="px-4 py-2 rounded bg-gray-100 cursor-pointer">Cancel</button>
-            <button onClick={handleDone} className="px-4 py-2 rounded bg-emerald-500 text-white cursor-pointer">Done</button>
+            <button
+              onClick={onCancel}
+              className="px-4 py-2 rounded bg-gray-100 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDone}
+              className="px-4 py-2 rounded bg-emerald-500 text-white cursor-pointer"
+            >
+              Done
+            </button>
           </div>
         </div>
       </div>

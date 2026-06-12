@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import ImageCropper from "../../../components/ImageCropper";
+import { readFileAsDataUrl } from "../../../lib/fileUtils";
 
 const schema = z.object({
   displayName: z.string().min(1, "Display name is required"),
@@ -20,6 +22,8 @@ export default function EditProfileForm() {
   const [avatarFile, setAvatarFile] = useState(null);
   const [preview, setPreview] = useState(() => user?.avatarUrl ?? null);
   const fileInputRef = useRef(null);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [cropSrc, setCropSrc] = useState(null);
 
   const {
     register,
@@ -78,7 +82,21 @@ export default function EditProfileForm() {
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              if (!f) return;
+              try {
+                const dataUrl = await readFileAsDataUrl(f);
+                setCropSrc(dataUrl);
+                setCropOpen(true);
+              } catch (err) {
+                // fallback: use raw file
+                setAvatarFile(f);
+              } finally {
+                // clear input value so selecting same file again will fire change
+                try { e.target.value = ''; } catch (e) {}
+              }
+            }}
             className="hidden"
           />
         </div>
@@ -124,6 +142,24 @@ export default function EditProfileForm() {
           </button>
         </div>
       </form>
+      <ImageCropper
+        src={cropSrc}
+        open={cropOpen}
+        onCancel={() => {
+          setCropOpen(false);
+          setCropSrc(null);
+        }}
+        onComplete={(blob) => {
+          // create a File from blob and set as avatar
+          const file = new File([blob], 'avatar.jpg', { type: blob.type });
+          setAvatarFile(file);
+          const url = URL.createObjectURL(file);
+          setPreview(url);
+          setCropOpen(false);
+          setCropSrc(null);
+        }}
+        aspect={1}
+      />
     </div>
   );
 }
