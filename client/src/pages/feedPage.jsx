@@ -13,7 +13,7 @@ export default function FeedPage() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useFeed();
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/" replace />;
 
   // Infinite scroll — watch the last element, fetch more when it enters viewport
   const observer = useRef();
