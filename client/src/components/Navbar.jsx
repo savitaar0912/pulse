@@ -193,7 +193,7 @@ export default function Navbar() {
             </div>
           </>
         ) : (
-          <Link to="/login" className="text-emerald-600 font-semibold">Log In</Link>
+          <></>
         )}
       </div>
     </nav>
