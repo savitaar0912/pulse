@@ -3,6 +3,7 @@ import { Image, X } from "lucide-react";
 import { useAuthStore } from "../../auth/store";
 import { useCreatePost } from "../hooks/usePosts";
 import Avatar from "../../../components/Avatar";
+import { Link } from "react-router-dom";
 
 export default function CreatePost() {
   const { user } = useAuthStore();
@@ -36,7 +37,9 @@ export default function CreatePost() {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
       <div className="flex gap-3">
-        <Avatar src={user?.avatarUrl} username={user?.username} />
+        <Link to={`/${user?.username}`}>
+          <Avatar src={user?.avatarUrl} username={user?.username} />
+        </Link>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}

@@ -7,6 +7,7 @@ import {
 
 import { Trash2 } from "lucide-react";
 import Avatar from "../../../components/Avatar";
+import { Link } from "react-router-dom";
 import { useAuthStore } from "../../auth/store";
 
 export default function Comments({ postId, open }) {
@@ -73,13 +74,15 @@ export default function Comments({ postId, open }) {
           )}
           {comments.map((c) => (
             <div key={c._id} className="flex items-start gap-3">
-              <Avatar src={c.userId?.avatarUrl} username={c.userId?.username} />
+              <Link to={`/${c.userId?.username}`} className="flex-shrink-0">
+                <Avatar src={c.userId?.avatarUrl} username={c.userId?.username} />
+              </Link>
               <div className="bg-white rounded-xl p-5 shadow-md flex-1">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-sm font-semibold">
+                    <Link to={`/${c.userId?.username}`} className="text-sm font-semibold block">
                       {c.userId?.displayName}
-                    </div>
+                    </Link>
                     <div className="text-sm text-gray-700 ml-10">{c.content}</div>
                   </div>
                   <div>

@@ -26,12 +26,14 @@ export default function NotificationsList() {
           <div className="p-4">Loading...</div>
         ) : notifications.length === 0 ? (
           <div className="p-4 text-sm text-gray-600">No notifications</div>
-        ) : (
+        ) : (Make follow
           notifications.map((n) => (
             <div key={n._id} className="flex gap-2 items-center py-2.5 px-8 sm:py-2 sm:px-6 hover:bg-gray-50">
-              <Avatar src={n.actorId?.avatarUrl} username={n.actorId?.displayName} size="xs" />
+              <Link to={`/${n.actorId?.username}`} className="flex-shrink-0">
+                <Avatar src={n.actorId?.avatarUrl} username={n.actorId?.username} size="xs" />
+              </Link>
               <div className="text-sm sm:text-base flex-1 min-w-0">
-                <div className="font-medium truncate text-sm">{n.actorId?.displayName}</div>
+                <Link to={`/${n.actorId?.username}`} className="font-medium truncate text-sm block">{n.actorId?.displayName}</Link>
                 <div className="text-gray-600 truncate text-xs">
                   {n.type === "like" && "liked your post"}
                   {n.type === "follow" && "started following you"}

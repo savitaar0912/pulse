@@ -4,6 +4,7 @@ import Comments from "../features/posts/components/Comments";
 import { useAuthStore } from "../features/auth/store";
 import { useLikePost, useDeletePost } from "../features/posts/hooks/usePosts";
 import Avatar from "./Avatar";
+import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import ConfirmModal from "./ConfirmModal";
 
@@ -20,14 +21,16 @@ export default function PostCard({ post }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
       <div className="flex items-center gap-3 pt-2.5 pr-2.5 pb-2.5 pl-0">
-        <Avatar src={post.userId.avatarUrl} username={post.userId.username} />
-        <div>
-          <p className="font-semibold text-sm">{post.userId.displayName}</p>
-          <p className="text-gray-400 text-xs">
-            @{post.userId.username} ·{" "}
-            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-          </p>
-        </div>
+        <Link to={`/${post.userId.username}`} className="flex items-center gap-3">
+          <Avatar src={post.userId.avatarUrl} username={post.userId.username} />
+          <div>
+            <p className="font-semibold text-sm">{post.userId.displayName}</p>
+            <p className="text-gray-400 text-xs">
+              @{post.userId.username} ·{" "}
+              {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+            </p>
+          </div>
+        </Link>
         {isOwner && (
           <>
             <button

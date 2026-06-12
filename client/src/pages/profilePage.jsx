@@ -82,12 +82,13 @@ export default function ProfilePage() {
             <button
               onClick={() => toggleFollow({ id: user._id, isFollowing })}
               disabled={toggling}
-              className={`text-sm px-4 py-1.5 rounded-full font-semibold transition
+              className={`text-sm px-4 py-1.5 rounded-full font-semibold transition cursor-pointer
                 ${
                   isFollowing
                     ? "border border-gray-300 hover:border-red-400 hover:text-red-500"
                     : "bg-black text-white hover:bg-gray-800"
                 } disabled:opacity-50`}
+              aria-label={isFollowing ? 'Unfollow' : 'Follow'}
             >
               {isFollowing ? "Following" : "Follow"}
             </button>
