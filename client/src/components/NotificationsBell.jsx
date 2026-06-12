@@ -63,7 +63,7 @@ export default function NotificationsBell() {
       <button
         aria-label="Notifications"
         onClick={() => setOpen((v) => !v)}
-        className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+        className="p-2 rounded-full hover:bg-gray-100 focus:outline-none cursor-pointer"
         type="button"
       >
         {/* Bell icon */}

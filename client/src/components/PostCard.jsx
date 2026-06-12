@@ -5,6 +5,7 @@ import { useAuthStore } from "../features/auth/store";
 import { useLikePost, useDeletePost } from "../features/posts/hooks/usePosts";
 import Avatar from "./Avatar";
 import { formatDistanceToNow } from "date-fns";
+import ConfirmModal from "./ConfirmModal";
 
 export default function PostCard({ post }) {
   const [showComments, setShowComments] = useState(false);
@@ -14,6 +15,7 @@ export default function PostCard({ post }) {
 
   const isOwner = user?._id === post.userId._id;
   const isLiked = post.isLiked;
+  const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
@@ -27,14 +29,25 @@ export default function PostCard({ post }) {
           </p>
         </div>
         {isOwner && (
-          <button
-            onClick={() =>
-              deletePost({ id: post._id, ownerId: post.userId._id })
-            }
-            className="ml-auto text-gray-400 hover:text-red-500"
-          >
-            <Trash2 size={16} />
-          </button>
+          <>
+            <button
+              onClick={() => setShowConfirm(true)}
+              className="ml-auto text-gray-400 hover:text-red-500 cursor-pointer"
+            >
+              <Trash2 size={16} />
+            </button>
+
+            <ConfirmModal
+              open={showConfirm}
+              title="Delete post"
+              description="This action will permanently delete the post. Are you sure you want to continue?"
+              onCancel={() => setShowConfirm(false)}
+              onConfirm={() => {
+                setShowConfirm(false);
+                deletePost({ id: post._id, ownerId: post.userId._id });
+              }}
+            />
+          </>
         )}
       </div>
 

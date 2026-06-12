@@ -15,7 +15,7 @@ export default function NotificationsList() {
         <button
           onClick={() => markAllRead()}
           disabled={marking}
-          className="bg-emerald-500 text-white text-sm px-3 py-1 rounded hover:bg-emerald-600 disabled:opacity-50 whitespace-nowrap flex-shrink-0"
+          className="bg-emerald-500 text-white text-sm px-3 py-1 rounded hover:bg-emerald-600 disabled:opacity-50 whitespace-nowrap flex-shrink-0 cursor-pointer"
         >
           Mark all as read
         </button>
