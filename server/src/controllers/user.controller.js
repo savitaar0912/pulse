@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import Notification from "../models/Notification.js";
+import { cloudinary } from "../config/cloudinary.js";
 import { AppError } from "../middleware/errorHandler.js";
 import Follow from "../models/Follow.js";
 import Post from "../models/Post.js";
