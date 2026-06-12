@@ -4,11 +4,16 @@ import { z } from "zod";
 import { Link } from "react-router-dom";
 import { useRegister } from "../features/auth/hooks/useAuth";
 
+const usernameRegex = /^[A-Za-z0-9_]+$/;
+
 const schema = z.object({
-  username: z.string().min(3, "UserName already Exists"),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .regex(usernameRegex, "Username may only contain letters, numbers and underscores"),
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Min 6 characters"),
-  displayName: z.string().min(3, "Display Name already Exists"),
+  displayName: z.string().min(3, "Display name must be at least 3 characters"),
 });
 
 export default function RegisterPage() {
@@ -32,7 +37,7 @@ export default function RegisterPage() {
             <input
               {...register("username")}
               type="text"
-              placeholder="User Name"
+              placeholder="Username (letters, numbers, underscore)"
               className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             {errors.username && (
@@ -71,7 +76,7 @@ export default function RegisterPage() {
             <input
               {...register("displayName")}
               type="text"
-              placeholder="Display Name"
+              placeholder="Display Name (spaces allowed)"
               className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
             {errors.displayName && (
