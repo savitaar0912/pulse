@@ -50,7 +50,7 @@ export default function Navbar() {
     setActiveIndex(-1);
   }, [searchUsers]);
   return (
-    <nav className="w-full flex items-center px-4 py-2 bg-white shadow">
+    <nav className="sticky top-0 z-50 w-full flex items-center px-4 py-2 bg-white shadow">
       {/* Left: Logo */}
       <div className="flex items-center flex-shrink-0">
         <Link to="/" className="flex items-center gap-2">
