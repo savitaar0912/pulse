@@ -27,8 +27,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;               // flag it so we don't infinite loop
       try {
-        const { data } = await axios.post('/api/auth/refresh', {}, {
-          withCredentials: true,              // send the httpOnly cookie
+        const refreshUrl = import.meta.env.VITE_API_URL
+          ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api/auth/refresh`
+          : '/api/auth/refresh';
+
+        const { data } = await axios.post(refreshUrl, {}, {
+          withCredentials: true, // send the httpOnly cookie
         });
         localStorage.setItem('accessToken', data.accessToken);
         original.headers.Authorization = `Bearer ${data.accessToken}`;
