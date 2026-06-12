@@ -1,15 +1,65 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import NotificationsList from "./NotificationsList";
 import { useNotifications } from "../features/notifications/hooks/useNotifications";
 
 export default function NotificationsBell() {
   const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  const [modalTop, setModalTop] = useState(null);
   const { data } = useNotifications();
   const notifications = data?.notifications ?? [];
   const hasUnread = notifications.some((n) => !n.isRead);
 
+  useEffect(() => {
+    function handlePointer(e) {
+      if (!open) return;
+      if (!rootRef.current) return;
+      if (!rootRef.current.contains(e.target)) setOpen(false);
+    }
+
+    function onKey(e) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+
+    document.addEventListener('pointerdown', handlePointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointer);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    // compute navbar bottom offset so mobile modal can sit just below it
+    function computeTop() {
+      if (!open) return;
+      if (window.innerWidth >= 768) {
+        setModalTop(null);
+        return;
+      }
+      const nav = document.querySelector('nav');
+      const top = nav ? nav.getBoundingClientRect().bottom : 0;
+      setModalTop(Math.ceil(top));
+    }
+    computeTop();
+    window.addEventListener('resize', computeTop);
+    return () => window.removeEventListener('resize', computeTop);
+  }, [open]);
+
+  useEffect(() => {
+    // prevent background (feed) from scrolling when modal is open
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={rootRef}>
       <button
         aria-label="Notifications"
         onClick={() => setOpen((v) => !v)}
@@ -28,14 +78,26 @@ export default function NotificationsBell() {
 
       {open && (
         <>
-          {/* Overlay to close modal when clicking outside */}
+          {/* Overlay (mobile only) to close modal when clicking outside */}
           <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 md:hidden pointer-events-auto"
+            onPointerDown={() => setOpen(false)}
+            onTouchStart={() => setOpen(false)}
           />
 
-          <div className="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-md z-50">
-            <NotificationsList />
+          {/* Mobile: centered modal. Desktop: anchored dropdown. */}
+          <div
+            className={"fixed inset-0 z-50 flex justify-center md:static md:block pointer-events-none " + (modalTop ? 'items-start' : 'items-center')}
+            style={modalTop ? { paddingTop: modalTop } : undefined}
+          >
+            <div
+              className="w-full max-w-xs mx-4 md:mx-0 md:w-80 bg-white shadow-lg rounded-md overflow-auto md:overflow-visible md:max-h-64 md:absolute md:right-0 md:mt-2 pointer-events-auto"
+              style={{ maxHeight: 'calc(100vh - 5rem)' }}
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+            >
+              <NotificationsList />
+            </div>
           </div>
         </>
       )}

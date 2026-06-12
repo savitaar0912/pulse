@@ -5,6 +5,7 @@ export default function Avatar({ src, username, size = "md" }) {
     sm: "w-8 h-8 text-sm",
     md: "w-10 h-10 text-base",
     lg: "w-16 h-16 text-xl",
+    xs: "w-6 h-6 text-xs",
   };
 
   return (
