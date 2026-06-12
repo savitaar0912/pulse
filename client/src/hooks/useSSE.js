@@ -9,8 +9,9 @@ export const useSSE = () => {
   useEffect(() => {
     if (!user) return;
 
+    const base = import.meta.env.VITE_API_URL || "";
     const token = localStorage.getItem("accessToken");
-    const es = new EventSource(`/api/stream?token=${token}`);
+    const es = new EventSource(`${base}/api/stream?token=${token}`);
 
     // Named event — must use addEventListener, not onmessage
     es.addEventListener("new_post", (e) => {

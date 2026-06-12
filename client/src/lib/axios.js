@@ -2,8 +2,8 @@ import axios from 'axios';
 import { queryClient } from './queryClient';
 
 const api = axios.create({
-  baseURL: '/api',
-  withCredentials: true,        // send cookies on every request
+  baseURL: import.meta.env.VITE_API_URL || '/api',
+  withCredentials: true,
 });
 
 // Every time your app calls any API endpoint — posts, feed, profile, anything — this runs first. It reads the token from localStorage and attaches it to the request header. You never have to manually add the token in your API calls. It's automatic.
