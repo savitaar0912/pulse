@@ -7,12 +7,15 @@ import { Toaster } from 'react-hot-toast';
 import { queryClient } from './lib/queryClient';
 import App from './App.jsx';
 import './index.css';
+import SessionBootstrap from './components/SessionBootstrap';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+         <SessionBootstrap>
+          <App />
+        </SessionBootstrap>
         <Toaster position="top-left" />
         <ReactQueryDevtools initialIsOpen={false} />
       </BrowserRouter>

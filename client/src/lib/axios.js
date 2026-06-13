@@ -8,7 +8,7 @@ const apiBase = import.meta.env.VITE_API_URL
 const api = axios.create({
   baseURL: apiBase,
   withCredentials: true,
-  timeout: 15000, // 15 second timeout — handles cold starts
+  timeout: 15000,
 });
 
 api.interceptors.request.use((config) => {
@@ -20,15 +20,41 @@ api.interceptors.request.use((config) => {
 let isRefreshing = false;
 let refreshQueue = [];
 
+export const runRefresh = async () => {
+  const { data } = await axios.post(
+    `${apiBase}/auth/refresh`,
+    {},
+    { withCredentials: true, timeout: 15000 }
+  );
+  if (!data?.accessToken) throw new Error('No token');
+  localStorage.setItem('accessToken', data.accessToken);
+  api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
+  return data.accessToken;
+};
+
+const clearSessionAndRedirect = () => {
+  localStorage.removeItem('accessToken');
+  queryClient.clear();
+  // Import dynamically to avoid circular dependency
+  import('../features/auth/store').then(({ useAuthStore }) => {
+    useAuthStore.getState().clearAuth();
+  });
+  window.location.href = '/login';
+};
+
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
 
+    // Don't intercept the refresh call itself
+    if (original.url?.includes('/auth/refresh')) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
 
-      // If refresh already in progress, queue this request
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           refreshQueue.push({ resolve, reject });
@@ -41,28 +67,15 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post(
-          `${apiBase}/auth/refresh`,
-          {},
-          { withCredentials: true, timeout: 15000 }
-        );
-
-        localStorage.setItem('accessToken', data.accessToken);
-        api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
-
-        // Resolve all queued requests with new token
-        refreshQueue.forEach(({ resolve }) => resolve(data.accessToken));
+        const token = await runRefresh();
+        refreshQueue.forEach(({ resolve }) => resolve(token));
         refreshQueue = [];
-
-        original.headers.Authorization = `Bearer ${data.accessToken}`;
+        original.headers.Authorization = `Bearer ${token}`;
         return api(original);
       } catch (err) {
-        // Only clear auth if refresh genuinely failed
         refreshQueue.forEach(({ reject }) => reject(err));
         refreshQueue = [];
-        localStorage.removeItem('accessToken');
-        queryClient.clear();
-        window.location.href = '/login';
+        clearSessionAndRedirect();
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
