@@ -34,7 +34,7 @@ export default function NotificationsList() {
                 <Avatar src={n.actorId?.avatarUrl} username={n.actorId?.username} size="xs" />
               </Link>
               <div className="text-sm sm:text-base flex-1 min-w-0">
-                <Link to={`/${n.actorId?.username}`} className="font-medium truncate text-sm block">{n.actorId?.displayName}</Link>
+                <Link to={`/${n.actorId?.username}`} className="font-medium truncate text-sm block">{n.actorId?.displayName || "Pulse User"}</Link>
                 <div className="text-gray-600 truncate text-xs">
                   {n.type === "like" && "liked your post"}
                   {n.type === "follow" && "started following you"}
